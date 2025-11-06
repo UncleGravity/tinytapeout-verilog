@@ -1,0 +1,9 @@
+[project]
+name = "tinytapeout-test"
+version = "0.1.0"
+description = "Cocotb testbench for Tiny Tapeout Verilog project"
+requires-python = ">=3.11"
+dependencies = [
+    "cocotb>=2.0.0",
+    "pytest>=8.4.2",
+]
