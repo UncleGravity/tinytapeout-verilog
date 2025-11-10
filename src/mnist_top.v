@@ -68,11 +68,20 @@ module mnist_top (
     reg [5:0] layer1_read_addr;
     wire signed [1:0] layer1_read_data;
     
+    // Pack pixels into flat vector for layer1_full
+    wire [127:0] pixels_flat;
+    genvar gp;
+    generate
+        for (gp = 0; gp < 64; gp = gp + 1) begin : pack_pixels
+            assign pixels_flat[gp*2 +: 2] = pixels[gp];
+        end
+    endgenerate
+    
     layer1_full layer1 (
         .clk(clk),
         .rst_n(rst_n),
         .start(layer1_start),
-        .pixels(pixels),                       // Pass entire pixel array
+        .pixels_flat(pixels_flat),             // Pass flattened pixel vector
         .done(layer1_done),
         .busy(layer1_busy),
         .read_addr(layer1_read_addr),
@@ -87,11 +96,20 @@ module mnist_top (
     wire layer2_busy;
     wire signed [5:0] layer2_read_data;
     
+    // Pack layer1 outputs into flat vector for layer2_full
+    wire [95:0] layer1_outputs_flat;
+    genvar ga;
+    generate
+        for (ga = 0; ga < 48; ga = ga + 1) begin : pack_activations
+            assign layer1_outputs_flat[ga*2 +: 2] = layer1_outputs[ga];
+        end
+    endgenerate
+    
     layer2_full layer2 (
         .clk(clk),
         .rst_n(rst_n),
         .start(layer2_start),
-        .layer1_activations(layer1_outputs),   // Pass entire layer1 output array
+        .layer1_activations_flat(layer1_outputs_flat),  // Pass flattened activation vector
         .done(layer2_done),
         .busy(layer2_busy),
         .read_addr(argmax_read_idx),           // For reading logits for argmax

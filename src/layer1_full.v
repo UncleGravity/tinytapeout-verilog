@@ -25,19 +25,28 @@
  *   - Total: ~3,216 cycles for all 48 neurons
  */
 
-module layer1_full #(
-    parameter PIXEL_ARRAY_SIZE = 64
-)(
+module layer1_full (
     input  wire        clk,
     input  wire        rst_n,
     input  wire        start,              // Start layer 1 computation
-    input  wire [1:0]  pixels [0:63],      // Input pixel array (all 64 pixels)
+    input  wire [127:0] pixels_flat,       // Input pixels as flat vector (64 × 2-bit = 128 bits)
     output reg         done,               // Computation complete
     output reg         busy,               // Currently computing
     // Read interface for outputs (after done=1)
     input  wire [5:0]  read_addr,          // Which output to read (0-47)
     output wire signed [1:0] read_data     // Output value at read_addr
 );
+
+    // ========================================================================
+    // Unpack flat pixel vector into array
+    // ========================================================================
+    reg [1:0] pixels [0:63];
+    integer k;
+    always @(*) begin
+        for (k = 0; k < 64; k = k + 1) begin
+            pixels[k] = pixels_flat[k*2 +: 2];
+        end
+    end
 
     // ========================================================================
     // Weight and Bias ROM
@@ -84,7 +93,7 @@ module layer1_full #(
     wire [5:0] neuron_mac_count;       // Which MAC the neuron is on
     
     // ROM addressing for current neuron - use neuron's counter
-    wire [11:0] weight_addr = neuron_idx * 64 + neuron_mac_count;
+    wire [11:0] weight_addr = neuron_idx * 12'd64 + {6'd0, neuron_mac_count};
     wire [1:0] current_weight = w1_rom[weight_addr];
     wire signed [3:0] current_bias = $signed(b1_rom[neuron_idx]);
     

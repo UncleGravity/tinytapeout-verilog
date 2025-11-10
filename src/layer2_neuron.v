@@ -125,7 +125,7 @@ module layer2_neuron (
                 ADD_BIAS: begin
                     // Add bias to final accumulator value (truncate to 6-bit)
                     // Cast mac_acc_out to signed for proper signed addition
-                    result <= $signed(mac_acc_out[5:0]) + bias;
+                    result <= $signed(mac_acc_out[5:0]) + $signed({{2{bias[3]}}, bias});  // Sign-extend 4-bit bias to 6-bit
                     state <= DONE;
                 end
 

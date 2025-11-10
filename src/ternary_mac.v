@@ -47,7 +47,7 @@ module ternary_mac (
         if (!rst_n) begin
             acc_out <= 7'sd0;
         end else if (enable) begin
-            acc_out <= acc_in + product;
+            acc_out <= acc_in + $signed({{4{product[2]}}, product});  // Sign-extend 3-bit to 7-bit
         end
     end
 

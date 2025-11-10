@@ -27,13 +27,24 @@ module layer2_full (
     input  wire        clk,
     input  wire        rst_n,
     input  wire        start,              // Start Layer 2 computation
-    input  wire signed [1:0] layer1_activations [0:47], // All 48 Layer 1 outputs
+    input  wire [95:0] layer1_activations_flat, // All 48 Layer 1 outputs as flat vector (48 × 2-bit = 96 bits)
     output reg         done,               // Computation complete
     output reg         busy,               // Currently computing
     // Read interface for outputs (after done=1)
     input  wire [3:0]  read_addr,          // Which output to read (0-9)
     output wire signed [5:0] read_data     // Logit value at read_addr
 );
+
+    // ========================================================================
+    // Unpack flat activation vector into array
+    // ========================================================================
+    reg signed [1:0] layer1_activations [0:47];
+    integer k;
+    always @(*) begin
+        for (k = 0; k < 48; k = k + 1) begin
+            layer1_activations[k] = layer1_activations_flat[k*2 +: 2];
+        end
+    end
 
     // ========================================================================
     // Weight and Bias ROM
@@ -80,7 +91,7 @@ module layer2_full (
     wire [5:0] neuron_mac_count;  // From neuron module
     
     // ROM addressing for current neuron - use neuron's counter!
-    wire [8:0] weight_addr = neuron_idx * 48 + neuron_mac_count;
+    wire [8:0] weight_addr = neuron_idx * 9'd48 + {3'd0, neuron_mac_count};
     wire [1:0] current_weight = w2_rom[weight_addr];
     wire signed [3:0] current_bias = $signed(b2_rom[neuron_idx]);
     
