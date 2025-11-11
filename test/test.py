@@ -148,7 +148,7 @@ async def test_wrapper_single_inference(dut):
     # Wait for done signal
     dut._log.info("Waiting for computation to complete...")
     max_cycles = 5000
-    while not dut.uo_out.value[4] and cycle_count < max_cycles:  # Check done bit
+    while dut.uo_out.value[4] != 1 and cycle_count < max_cycles:  # Check done bit
         await RisingEdge(dut.clk)
         cycle_count += 1
 
@@ -246,7 +246,7 @@ async def test_wrapper_multiple_inferences(dut):
 
         # Wait for done
         max_cycles = 5000
-        while not dut.uo_out.value[4] and cycle_count < max_cycles:
+        while dut.uo_out.value[4] != 1 and cycle_count < max_cycles:
             await RisingEdge(dut.clk)
             cycle_count += 1
 
