@@ -3,8 +3,8 @@
  *
  * Auto-generated from weights.npz - DO NOT EDIT
  *
- * Uses localparam for gate-level simulation compatibility.
- * Approach based on Tiny Tapeout 02 charRom.v pattern.
+ * Uses case statements for maximum compatibility.
+ * Approach based on Tiny Tapeout 02 Rick Roll project.
  *
  * Memory:
  *   - 480 weights (10 neurons × 48 inputs, 2-bit ternary)
@@ -14,511 +14,512 @@
 module layer2_rom (
     input  wire [8:0] weight_addr,  // Address for weight lookup (0-479)
     input  wire [3:0] bias_addr,    // Address for bias lookup (0-9)
-    output wire [1:0] weight_data,  // Weight output
-    output wire [3:0] bias_data     // Bias output
+    output reg  [1:0] weight_data,  // Weight output
+    output reg  [3:0] bias_data     // Bias output
 );
 
-    // Weight ROM: 480 entries, 2-bit each = 960 bits total
-    // Using single-dimension packed array for Iverilog compatibility
-    localparam [959:0] WEIGHTS = {
-        2'b11,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b11,
-        2'b01,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b01,
-        2'b11,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b11,
-        2'b11,
-        2'b00,
-        2'b00,
-        2'b11,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b01,
-        2'b01,
-        2'b00,
-        2'b11,
-        2'b00,
-        2'b01,
-        2'b01,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b11,
-        2'b00,
-        2'b00,
-        2'b11,
-        2'b00,
-        2'b11,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b01,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b01,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b01,
-        2'b00,
-        2'b01,
-        2'b01,
-        2'b00,
-        2'b11,
-        2'b00,
-        2'b11,
-        2'b01,
-        2'b11,
-        2'b00,
-        2'b11,
-        2'b11,
-        2'b00,
-        2'b11,
-        2'b00,
-        2'b00,
-        2'b01,
-        2'b01,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b01,
-        2'b01,
-        2'b11,
-        2'b00,
-        2'b01,
-        2'b00,
-        2'b00,
-        2'b01,
-        2'b01,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b01,
-        2'b01,
-        2'b00,
-        2'b11,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b11,
-        2'b00,
-        2'b00,
-        2'b11,
-        2'b00,
-        2'b00,
-        2'b11,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b11,
-        2'b01,
-        2'b00,
-        2'b00,
-        2'b11,
-        2'b01,
-        2'b00,
-        2'b01,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b01,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b01,
-        2'b00,
-        2'b11,
-        2'b00,
-        2'b01,
-        2'b01,
-        2'b00,
-        2'b00,
-        2'b11,
-        2'b01,
-        2'b11,
-        2'b00,
-        2'b11,
-        2'b01,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b01,
-        2'b00,
-        2'b00,
-        2'b01,
-        2'b01,
-        2'b11,
-        2'b00,
-        2'b00,
-        2'b11,
-        2'b01,
-        2'b11,
-        2'b00,
-        2'b11,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b11,
-        2'b00,
-        2'b11,
-        2'b11,
-        2'b00,
-        2'b00,
-        2'b11,
-        2'b01,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b11,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b01,
-        2'b00,
-        2'b00,
-        2'b01,
-        2'b11,
-        2'b00,
-        2'b00,
-        2'b01,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b01,
-        2'b00,
-        2'b01,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b01,
-        2'b11,
-        2'b11,
-        2'b00,
-        2'b00,
-        2'b01,
-        2'b01,
-        2'b00,
-        2'b01,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b01,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b11,
-        2'b01,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b01,
-        2'b00,
-        2'b01,
-        2'b00,
-        2'b00,
-        2'b01,
-        2'b11,
-        2'b11,
-        2'b11,
-        2'b00,
-        2'b11,
-        2'b01,
-        2'b00,
-        2'b11,
-        2'b11,
-        2'b01,
-        2'b01,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b01,
-        2'b00,
-        2'b00,
-        2'b01,
-        2'b00,
-        2'b00,
-        2'b01,
-        2'b00,
-        2'b01,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b11,
-        2'b00,
-        2'b01,
-        2'b11,
-        2'b01,
-        2'b11,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b01,
-        2'b00,
-        2'b11,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b11,
-        2'b00,
-        2'b01,
-        2'b11,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b01,
-        2'b00,
-        2'b11,
-        2'b00,
-        2'b00,
-        2'b01,
-        2'b00,
-        2'b01,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b11,
-        2'b00,
-        2'b00,
-        2'b01,
-        2'b00,
-        2'b00,
-        2'b01,
-        2'b11,
-        2'b01,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b11,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b01,
-        2'b00,
-        2'b11,
-        2'b00,
-        2'b00,
-        2'b01,
-        2'b00,
-        2'b00,
-        2'b01,
-        2'b01,
-        2'b00,
-        2'b01,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b11,
-        2'b00,
-        2'b01,
-        2'b00,
-        2'b00,
-        2'b11,
-        2'b00,
-        2'b11,
-        2'b00,
-        2'b01,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b01,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b01,
-        2'b00,
-        2'b01,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b11,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b01,
-        2'b01,
-        2'b00,
-        2'b11,
-        2'b11,
-        2'b11,
-        2'b01,
-        2'b01,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b11,
-        2'b00,
-        2'b00,
-        2'b01,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b11,
-        2'b00,
-        2'b00,
-        2'b01,
-        2'b11,
-        2'b00,
-        2'b01,
-        2'b00,
-        2'b01,
-        2'b00,
-        2'b00,
-        2'b01,
-        2'b11,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b01,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b11,
-        2'b11,
-        2'b00,
-        2'b01,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b11,
-        2'b00,
-        2'b01,
-        2'b11,
-        2'b11,
-        2'b00,
-        2'b11,
-        2'b00,
-        2'b00,
-        2'b00,
-        2'b11,
-        2'b00,
-        2'b00,
-        2'b11,
-        2'b00,
-        2'b11,
-        2'b00,
-        2'b11,
-        2'b00
-    };
+    // Weight ROM - combinational case statement
+    always @(*) begin
+        case(weight_addr)
+            9'd0: weight_data = 2'b00;
+            9'd1: weight_data = 2'b11;
+            9'd2: weight_data = 2'b00;
+            9'd3: weight_data = 2'b11;
+            9'd4: weight_data = 2'b00;
+            9'd5: weight_data = 2'b11;
+            9'd6: weight_data = 2'b00;
+            9'd7: weight_data = 2'b00;
+            9'd8: weight_data = 2'b11;
+            9'd9: weight_data = 2'b00;
+            9'd10: weight_data = 2'b00;
+            9'd11: weight_data = 2'b00;
+            9'd12: weight_data = 2'b11;
+            9'd13: weight_data = 2'b00;
+            9'd14: weight_data = 2'b11;
+            9'd15: weight_data = 2'b11;
+            9'd16: weight_data = 2'b01;
+            9'd17: weight_data = 2'b00;
+            9'd18: weight_data = 2'b11;
+            9'd19: weight_data = 2'b00;
+            9'd20: weight_data = 2'b00;
+            9'd21: weight_data = 2'b00;
+            9'd22: weight_data = 2'b00;
+            9'd23: weight_data = 2'b00;
+            9'd24: weight_data = 2'b01;
+            9'd25: weight_data = 2'b00;
+            9'd26: weight_data = 2'b11;
+            9'd27: weight_data = 2'b11;
+            9'd28: weight_data = 2'b00;
+            9'd29: weight_data = 2'b00;
+            9'd30: weight_data = 2'b00;
+            9'd31: weight_data = 2'b00;
+            9'd32: weight_data = 2'b00;
+            9'd33: weight_data = 2'b00;
+            9'd34: weight_data = 2'b01;
+            9'd35: weight_data = 2'b00;
+            9'd36: weight_data = 2'b00;
+            9'd37: weight_data = 2'b00;
+            9'd38: weight_data = 2'b00;
+            9'd39: weight_data = 2'b00;
+            9'd40: weight_data = 2'b00;
+            9'd41: weight_data = 2'b00;
+            9'd42: weight_data = 2'b00;
+            9'd43: weight_data = 2'b11;
+            9'd44: weight_data = 2'b01;
+            9'd45: weight_data = 2'b00;
+            9'd46: weight_data = 2'b00;
+            9'd47: weight_data = 2'b01;
+            9'd48: weight_data = 2'b00;
+            9'd49: weight_data = 2'b01;
+            9'd50: weight_data = 2'b00;
+            9'd51: weight_data = 2'b11;
+            9'd52: weight_data = 2'b01;
+            9'd53: weight_data = 2'b00;
+            9'd54: weight_data = 2'b00;
+            9'd55: weight_data = 2'b11;
+            9'd56: weight_data = 2'b00;
+            9'd57: weight_data = 2'b00;
+            9'd58: weight_data = 2'b00;
+            9'd59: weight_data = 2'b00;
+            9'd60: weight_data = 2'b01;
+            9'd61: weight_data = 2'b00;
+            9'd62: weight_data = 2'b00;
+            9'd63: weight_data = 2'b11;
+            9'd64: weight_data = 2'b00;
+            9'd65: weight_data = 2'b00;
+            9'd66: weight_data = 2'b00;
+            9'd67: weight_data = 2'b00;
+            9'd68: weight_data = 2'b01;
+            9'd69: weight_data = 2'b01;
+            9'd70: weight_data = 2'b11;
+            9'd71: weight_data = 2'b11;
+            9'd72: weight_data = 2'b11;
+            9'd73: weight_data = 2'b00;
+            9'd74: weight_data = 2'b01;
+            9'd75: weight_data = 2'b01;
+            9'd76: weight_data = 2'b00;
+            9'd77: weight_data = 2'b00;
+            9'd78: weight_data = 2'b00;
+            9'd79: weight_data = 2'b00;
+            9'd80: weight_data = 2'b00;
+            9'd81: weight_data = 2'b00;
+            9'd82: weight_data = 2'b11;
+            9'd83: weight_data = 2'b00;
+            9'd84: weight_data = 2'b00;
+            9'd85: weight_data = 2'b00;
+            9'd86: weight_data = 2'b00;
+            9'd87: weight_data = 2'b00;
+            9'd88: weight_data = 2'b00;
+            9'd89: weight_data = 2'b01;
+            9'd90: weight_data = 2'b00;
+            9'd91: weight_data = 2'b01;
+            9'd92: weight_data = 2'b00;
+            9'd93: weight_data = 2'b00;
+            9'd94: weight_data = 2'b00;
+            9'd95: weight_data = 2'b00;
+            9'd96: weight_data = 2'b01;
+            9'd97: weight_data = 2'b00;
+            9'd98: weight_data = 2'b00;
+            9'd99: weight_data = 2'b00;
+            9'd100: weight_data = 2'b00;
+            9'd101: weight_data = 2'b01;
+            9'd102: weight_data = 2'b00;
+            9'd103: weight_data = 2'b11;
+            9'd104: weight_data = 2'b00;
+            9'd105: weight_data = 2'b11;
+            9'd106: weight_data = 2'b00;
+            9'd107: weight_data = 2'b00;
+            9'd108: weight_data = 2'b01;
+            9'd109: weight_data = 2'b00;
+            9'd110: weight_data = 2'b11;
+            9'd111: weight_data = 2'b00;
+            9'd112: weight_data = 2'b00;
+            9'd113: weight_data = 2'b00;
+            9'd114: weight_data = 2'b01;
+            9'd115: weight_data = 2'b00;
+            9'd116: weight_data = 2'b01;
+            9'd117: weight_data = 2'b01;
+            9'd118: weight_data = 2'b00;
+            9'd119: weight_data = 2'b00;
+            9'd120: weight_data = 2'b01;
+            9'd121: weight_data = 2'b00;
+            9'd122: weight_data = 2'b00;
+            9'd123: weight_data = 2'b11;
+            9'd124: weight_data = 2'b00;
+            9'd125: weight_data = 2'b01;
+            9'd126: weight_data = 2'b00;
+            9'd127: weight_data = 2'b00;
+            9'd128: weight_data = 2'b00;
+            9'd129: weight_data = 2'b00;
+            9'd130: weight_data = 2'b00;
+            9'd131: weight_data = 2'b11;
+            9'd132: weight_data = 2'b00;
+            9'd133: weight_data = 2'b00;
+            9'd134: weight_data = 2'b00;
+            9'd135: weight_data = 2'b00;
+            9'd136: weight_data = 2'b00;
+            9'd137: weight_data = 2'b00;
+            9'd138: weight_data = 2'b00;
+            9'd139: weight_data = 2'b01;
+            9'd140: weight_data = 2'b11;
+            9'd141: weight_data = 2'b01;
+            9'd142: weight_data = 2'b00;
+            9'd143: weight_data = 2'b00;
+            9'd144: weight_data = 2'b01;
+            9'd145: weight_data = 2'b00;
+            9'd146: weight_data = 2'b00;
+            9'd147: weight_data = 2'b11;
+            9'd148: weight_data = 2'b00;
+            9'd149: weight_data = 2'b00;
+            9'd150: weight_data = 2'b00;
+            9'd151: weight_data = 2'b00;
+            9'd152: weight_data = 2'b00;
+            9'd153: weight_data = 2'b00;
+            9'd154: weight_data = 2'b01;
+            9'd155: weight_data = 2'b00;
+            9'd156: weight_data = 2'b01;
+            9'd157: weight_data = 2'b00;
+            9'd158: weight_data = 2'b00;
+            9'd159: weight_data = 2'b11;
+            9'd160: weight_data = 2'b00;
+            9'd161: weight_data = 2'b01;
+            9'd162: weight_data = 2'b00;
+            9'd163: weight_data = 2'b00;
+            9'd164: weight_data = 2'b00;
+            9'd165: weight_data = 2'b00;
+            9'd166: weight_data = 2'b00;
+            9'd167: weight_data = 2'b11;
+            9'd168: weight_data = 2'b01;
+            9'd169: weight_data = 2'b00;
+            9'd170: weight_data = 2'b11;
+            9'd171: weight_data = 2'b00;
+            9'd172: weight_data = 2'b00;
+            9'd173: weight_data = 2'b00;
+            9'd174: weight_data = 2'b00;
+            9'd175: weight_data = 2'b00;
+            9'd176: weight_data = 2'b00;
+            9'd177: weight_data = 2'b00;
+            9'd178: weight_data = 2'b00;
+            9'd179: weight_data = 2'b11;
+            9'd180: weight_data = 2'b00;
+            9'd181: weight_data = 2'b01;
+            9'd182: weight_data = 2'b00;
+            9'd183: weight_data = 2'b00;
+            9'd184: weight_data = 2'b00;
+            9'd185: weight_data = 2'b00;
+            9'd186: weight_data = 2'b11;
+            9'd187: weight_data = 2'b01;
+            9'd188: weight_data = 2'b11;
+            9'd189: weight_data = 2'b01;
+            9'd190: weight_data = 2'b00;
+            9'd191: weight_data = 2'b11;
+            9'd192: weight_data = 2'b00;
+            9'd193: weight_data = 2'b00;
+            9'd194: weight_data = 2'b00;
+            9'd195: weight_data = 2'b01;
+            9'd196: weight_data = 2'b00;
+            9'd197: weight_data = 2'b01;
+            9'd198: weight_data = 2'b00;
+            9'd199: weight_data = 2'b00;
+            9'd200: weight_data = 2'b01;
+            9'd201: weight_data = 2'b00;
+            9'd202: weight_data = 2'b00;
+            9'd203: weight_data = 2'b01;
+            9'd204: weight_data = 2'b00;
+            9'd205: weight_data = 2'b00;
+            9'd206: weight_data = 2'b00;
+            9'd207: weight_data = 2'b01;
+            9'd208: weight_data = 2'b01;
+            9'd209: weight_data = 2'b11;
+            9'd210: weight_data = 2'b11;
+            9'd211: weight_data = 2'b00;
+            9'd212: weight_data = 2'b01;
+            9'd213: weight_data = 2'b11;
+            9'd214: weight_data = 2'b00;
+            9'd215: weight_data = 2'b11;
+            9'd216: weight_data = 2'b11;
+            9'd217: weight_data = 2'b11;
+            9'd218: weight_data = 2'b01;
+            9'd219: weight_data = 2'b00;
+            9'd220: weight_data = 2'b00;
+            9'd221: weight_data = 2'b01;
+            9'd222: weight_data = 2'b00;
+            9'd223: weight_data = 2'b01;
+            9'd224: weight_data = 2'b00;
+            9'd225: weight_data = 2'b00;
+            9'd226: weight_data = 2'b00;
+            9'd227: weight_data = 2'b01;
+            9'd228: weight_data = 2'b11;
+            9'd229: weight_data = 2'b00;
+            9'd230: weight_data = 2'b00;
+            9'd231: weight_data = 2'b00;
+            9'd232: weight_data = 2'b00;
+            9'd233: weight_data = 2'b00;
+            9'd234: weight_data = 2'b01;
+            9'd235: weight_data = 2'b00;
+            9'd236: weight_data = 2'b00;
+            9'd237: weight_data = 2'b00;
+            9'd238: weight_data = 2'b00;
+            9'd239: weight_data = 2'b00;
+            9'd240: weight_data = 2'b00;
+            9'd241: weight_data = 2'b00;
+            9'd242: weight_data = 2'b00;
+            9'd243: weight_data = 2'b00;
+            9'd244: weight_data = 2'b00;
+            9'd245: weight_data = 2'b00;
+            9'd246: weight_data = 2'b00;
+            9'd247: weight_data = 2'b00;
+            9'd248: weight_data = 2'b01;
+            9'd249: weight_data = 2'b00;
+            9'd250: weight_data = 2'b01;
+            9'd251: weight_data = 2'b01;
+            9'd252: weight_data = 2'b00;
+            9'd253: weight_data = 2'b00;
+            9'd254: weight_data = 2'b11;
+            9'd255: weight_data = 2'b11;
+            9'd256: weight_data = 2'b01;
+            9'd257: weight_data = 2'b00;
+            9'd258: weight_data = 2'b00;
+            9'd259: weight_data = 2'b00;
+            9'd260: weight_data = 2'b00;
+            9'd261: weight_data = 2'b00;
+            9'd262: weight_data = 2'b00;
+            9'd263: weight_data = 2'b00;
+            9'd264: weight_data = 2'b01;
+            9'd265: weight_data = 2'b00;
+            9'd266: weight_data = 2'b01;
+            9'd267: weight_data = 2'b00;
+            9'd268: weight_data = 2'b00;
+            9'd269: weight_data = 2'b00;
+            9'd270: weight_data = 2'b00;
+            9'd271: weight_data = 2'b00;
+            9'd272: weight_data = 2'b00;
+            9'd273: weight_data = 2'b00;
+            9'd274: weight_data = 2'b01;
+            9'd275: weight_data = 2'b00;
+            9'd276: weight_data = 2'b00;
+            9'd277: weight_data = 2'b11;
+            9'd278: weight_data = 2'b01;
+            9'd279: weight_data = 2'b00;
+            9'd280: weight_data = 2'b00;
+            9'd281: weight_data = 2'b01;
+            9'd282: weight_data = 2'b00;
+            9'd283: weight_data = 2'b00;
+            9'd284: weight_data = 2'b00;
+            9'd285: weight_data = 2'b00;
+            9'd286: weight_data = 2'b00;
+            9'd287: weight_data = 2'b11;
+            9'd288: weight_data = 2'b00;
+            9'd289: weight_data = 2'b00;
+            9'd290: weight_data = 2'b00;
+            9'd291: weight_data = 2'b01;
+            9'd292: weight_data = 2'b11;
+            9'd293: weight_data = 2'b00;
+            9'd294: weight_data = 2'b00;
+            9'd295: weight_data = 2'b11;
+            9'd296: weight_data = 2'b11;
+            9'd297: weight_data = 2'b00;
+            9'd298: weight_data = 2'b11;
+            9'd299: weight_data = 2'b00;
+            9'd300: weight_data = 2'b00;
+            9'd301: weight_data = 2'b00;
+            9'd302: weight_data = 2'b00;
+            9'd303: weight_data = 2'b00;
+            9'd304: weight_data = 2'b00;
+            9'd305: weight_data = 2'b11;
+            9'd306: weight_data = 2'b00;
+            9'd307: weight_data = 2'b11;
+            9'd308: weight_data = 2'b01;
+            9'd309: weight_data = 2'b11;
+            9'd310: weight_data = 2'b00;
+            9'd311: weight_data = 2'b00;
+            9'd312: weight_data = 2'b11;
+            9'd313: weight_data = 2'b01;
+            9'd314: weight_data = 2'b01;
+            9'd315: weight_data = 2'b00;
+            9'd316: weight_data = 2'b00;
+            9'd317: weight_data = 2'b01;
+            9'd318: weight_data = 2'b00;
+            9'd319: weight_data = 2'b00;
+            9'd320: weight_data = 2'b00;
+            9'd321: weight_data = 2'b00;
+            9'd322: weight_data = 2'b01;
+            9'd323: weight_data = 2'b11;
+            9'd324: weight_data = 2'b00;
+            9'd325: weight_data = 2'b11;
+            9'd326: weight_data = 2'b01;
+            9'd327: weight_data = 2'b11;
+            9'd328: weight_data = 2'b00;
+            9'd329: weight_data = 2'b00;
+            9'd330: weight_data = 2'b01;
+            9'd331: weight_data = 2'b01;
+            9'd332: weight_data = 2'b00;
+            9'd333: weight_data = 2'b11;
+            9'd334: weight_data = 2'b00;
+            9'd335: weight_data = 2'b01;
+            9'd336: weight_data = 2'b00;
+            9'd337: weight_data = 2'b00;
+            9'd338: weight_data = 2'b00;
+            9'd339: weight_data = 2'b00;
+            9'd340: weight_data = 2'b01;
+            9'd341: weight_data = 2'b00;
+            9'd342: weight_data = 2'b00;
+            9'd343: weight_data = 2'b00;
+            9'd344: weight_data = 2'b00;
+            9'd345: weight_data = 2'b01;
+            9'd346: weight_data = 2'b00;
+            9'd347: weight_data = 2'b01;
+            9'd348: weight_data = 2'b11;
+            9'd349: weight_data = 2'b00;
+            9'd350: weight_data = 2'b00;
+            9'd351: weight_data = 2'b01;
+            9'd352: weight_data = 2'b11;
+            9'd353: weight_data = 2'b00;
+            9'd354: weight_data = 2'b00;
+            9'd355: weight_data = 2'b00;
+            9'd356: weight_data = 2'b11;
+            9'd357: weight_data = 2'b00;
+            9'd358: weight_data = 2'b00;
+            9'd359: weight_data = 2'b11;
+            9'd360: weight_data = 2'b00;
+            9'd361: weight_data = 2'b00;
+            9'd362: weight_data = 2'b11;
+            9'd363: weight_data = 2'b00;
+            9'd364: weight_data = 2'b00;
+            9'd365: weight_data = 2'b00;
+            9'd366: weight_data = 2'b00;
+            9'd367: weight_data = 2'b00;
+            9'd368: weight_data = 2'b00;
+            9'd369: weight_data = 2'b11;
+            9'd370: weight_data = 2'b00;
+            9'd371: weight_data = 2'b01;
+            9'd372: weight_data = 2'b01;
+            9'd373: weight_data = 2'b00;
+            9'd374: weight_data = 2'b00;
+            9'd375: weight_data = 2'b00;
+            9'd376: weight_data = 2'b00;
+            9'd377: weight_data = 2'b01;
+            9'd378: weight_data = 2'b01;
+            9'd379: weight_data = 2'b00;
+            9'd380: weight_data = 2'b00;
+            9'd381: weight_data = 2'b01;
+            9'd382: weight_data = 2'b00;
+            9'd383: weight_data = 2'b11;
+            9'd384: weight_data = 2'b01;
+            9'd385: weight_data = 2'b01;
+            9'd386: weight_data = 2'b00;
+            9'd387: weight_data = 2'b00;
+            9'd388: weight_data = 2'b00;
+            9'd389: weight_data = 2'b00;
+            9'd390: weight_data = 2'b00;
+            9'd391: weight_data = 2'b00;
+            9'd392: weight_data = 2'b01;
+            9'd393: weight_data = 2'b01;
+            9'd394: weight_data = 2'b00;
+            9'd395: weight_data = 2'b00;
+            9'd396: weight_data = 2'b11;
+            9'd397: weight_data = 2'b00;
+            9'd398: weight_data = 2'b11;
+            9'd399: weight_data = 2'b11;
+            9'd400: weight_data = 2'b00;
+            9'd401: weight_data = 2'b11;
+            9'd402: weight_data = 2'b01;
+            9'd403: weight_data = 2'b11;
+            9'd404: weight_data = 2'b00;
+            9'd405: weight_data = 2'b11;
+            9'd406: weight_data = 2'b00;
+            9'd407: weight_data = 2'b01;
+            9'd408: weight_data = 2'b01;
+            9'd409: weight_data = 2'b00;
+            9'd410: weight_data = 2'b01;
+            9'd411: weight_data = 2'b00;
+            9'd412: weight_data = 2'b00;
+            9'd413: weight_data = 2'b00;
+            9'd414: weight_data = 2'b00;
+            9'd415: weight_data = 2'b00;
+            9'd416: weight_data = 2'b01;
+            9'd417: weight_data = 2'b00;
+            9'd418: weight_data = 2'b00;
+            9'd419: weight_data = 2'b00;
+            9'd420: weight_data = 2'b01;
+            9'd421: weight_data = 2'b00;
+            9'd422: weight_data = 2'b00;
+            9'd423: weight_data = 2'b00;
+            9'd424: weight_data = 2'b00;
+            9'd425: weight_data = 2'b00;
+            9'd426: weight_data = 2'b11;
+            9'd427: weight_data = 2'b00;
+            9'd428: weight_data = 2'b11;
+            9'd429: weight_data = 2'b00;
+            9'd430: weight_data = 2'b00;
+            9'd431: weight_data = 2'b11;
+            9'd432: weight_data = 2'b00;
+            9'd433: weight_data = 2'b00;
+            9'd434: weight_data = 2'b00;
+            9'd435: weight_data = 2'b01;
+            9'd436: weight_data = 2'b01;
+            9'd437: weight_data = 2'b00;
+            9'd438: weight_data = 2'b11;
+            9'd439: weight_data = 2'b00;
+            9'd440: weight_data = 2'b01;
+            9'd441: weight_data = 2'b01;
+            9'd442: weight_data = 2'b00;
+            9'd443: weight_data = 2'b00;
+            9'd444: weight_data = 2'b00;
+            9'd445: weight_data = 2'b00;
+            9'd446: weight_data = 2'b00;
+            9'd447: weight_data = 2'b00;
+            9'd448: weight_data = 2'b00;
+            9'd449: weight_data = 2'b00;
+            9'd450: weight_data = 2'b00;
+            9'd451: weight_data = 2'b00;
+            9'd452: weight_data = 2'b11;
+            9'd453: weight_data = 2'b00;
+            9'd454: weight_data = 2'b00;
+            9'd455: weight_data = 2'b11;
+            9'd456: weight_data = 2'b11;
+            9'd457: weight_data = 2'b00;
+            9'd458: weight_data = 2'b00;
+            9'd459: weight_data = 2'b00;
+            9'd460: weight_data = 2'b00;
+            9'd461: weight_data = 2'b00;
+            9'd462: weight_data = 2'b00;
+            9'd463: weight_data = 2'b00;
+            9'd464: weight_data = 2'b00;
+            9'd465: weight_data = 2'b00;
+            9'd466: weight_data = 2'b11;
+            9'd467: weight_data = 2'b01;
+            9'd468: weight_data = 2'b00;
+            9'd469: weight_data = 2'b00;
+            9'd470: weight_data = 2'b00;
+            9'd471: weight_data = 2'b00;
+            9'd472: weight_data = 2'b00;
+            9'd473: weight_data = 2'b00;
+            9'd474: weight_data = 2'b01;
+            9'd475: weight_data = 2'b11;
+            9'd476: weight_data = 2'b00;
+            9'd477: weight_data = 2'b00;
+            9'd478: weight_data = 2'b00;
+            9'd479: weight_data = 2'b11;
+            default: weight_data = 2'b00;
+        endcase
+    end
 
-    // Bias ROM: 10 entries, 4-bit each = 40 bits total
-    localparam [39:0] BIASES = {
-        4'h0,
-        4'h2,
-        4'hF,
-        4'hE,
-        4'h3,
-        4'hF,
-        4'h1,
-        4'h0,
-        4'hF,
-        4'hE
-    };
-
-    // Combinational lookups - extract bits from flat array
-    assign weight_data = WEIGHTS[weight_addr*2 +: 2];
-    assign bias_data = BIASES[bias_addr*4 +: 4];
+    // Bias ROM - combinational case statement
+    always @(*) begin
+        case(bias_addr)
+            4'd0: bias_data = 4'hE;
+            4'd1: bias_data = 4'hF;
+            4'd2: bias_data = 4'h0;
+            4'd3: bias_data = 4'h1;
+            4'd4: bias_data = 4'hF;
+            4'd5: bias_data = 4'h3;
+            4'd6: bias_data = 4'hE;
+            4'd7: bias_data = 4'hF;
+            4'd8: bias_data = 4'h2;
+            4'd9: bias_data = 4'h0;
+            default: bias_data = 4'h0;
+        endcase
+    end
 
 endmodule
