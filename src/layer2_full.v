@@ -58,8 +58,7 @@ module layer2_full (
     reg [3:0] b2_rom [0:9];
     
     initial begin
-        $readmemh("layer2_weights.hex", w2_rom);
-        $readmemh("layer2_biases.hex", b2_rom);
+        `include "layer2_rom_init.vh"
     end
     
     // ========================================================================

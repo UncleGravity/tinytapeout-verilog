@@ -60,8 +60,7 @@ module layer1_full (
     reg [3:0] b1_rom [0:47];
     
     initial begin
-        $readmemh("layer1_weights.hex", w1_rom);
-        $readmemh("layer1_biases.hex", b1_rom);
+        `include "layer1_rom_init.vh"
     end
     
     // ========================================================================

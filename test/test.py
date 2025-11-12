@@ -311,7 +311,6 @@ async def test_wrapper_multiple_inferences(dut):
     dut._log.info("=" * 80)
 
     if num_fail > 0:
-        dut._log.error("")
         dut._log.error(f"FAILURES: {num_fail} tests failed")
         for f in failures:
             dut._log.error(
